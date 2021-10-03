@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
-  "author": "",
+  "author": "Scool development team",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
