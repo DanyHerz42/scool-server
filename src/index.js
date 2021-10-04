@@ -1,10 +1,6 @@
 const app = require('./app');
-const config = require('./config');
-const pool = require('./db');
+const {config} = require('./config');
 
-if(pool){
-  console.log("PostgreSQL successfully connected");
-}
 
 app.listen(config.server_port, () => {
   console.log(`Server on port http://localhost:${config.server_port}`);
