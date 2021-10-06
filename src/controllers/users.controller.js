@@ -41,7 +41,9 @@ exports.registroUsuario = async (req, res) => {
 
     const insertUser = await query(`INSERT INTO users (name_user, lastname, nickname, email, password_, id_role, id_status) VALUES ("${name_user}","${lastname}","${formatNick}","${email}","${hash}","${role}", 1);`)
     const newUser = await query(`SELECT * FROM users WHERE email = "${email}"`)
-    const token = JWT.sign({ newUser }, config.secret);
+    const token = JWT.sign({ newUser }, config.secret, {
+      expiresIn: '2hr'
+    });
 
     res.status(200).json({status: "200", message:"Usuario insertado con exito", token})
  
@@ -60,7 +62,9 @@ exports.login = async (req, res) => {
     }
     let comparePassword = await bcrypt.compare(req.body.password, userFound[0].password_);
     if(comparePassword){
-      let token = JWT.sign({ userFound }, config.secret);
+      let token = JWT.sign({ userFound }, config.secret, {
+        expiresIn: '2h'
+      });
       res.status(200).json({message: "Usuario loggeado con exito", token})
     }else{
       res.status(500).json({message: "Contraseña incorrectos "})
@@ -69,4 +73,18 @@ exports.login = async (req, res) => {
   } catch (error) {
     res.status(500).json({message: "Error, algo fallo en la peticion", error})
   }
+}
+
+exports.revalidarToken = (req,res) => {
+
+  const userFound = req.userFound;
+  const token = JWT.sign({userFound}, config.secret, {
+    expiresIn: '2h'
+  })
+
+  res.json({
+    ok: true,
+    message: 'Revalidación de token correcta',
+    token
+  })
 }
