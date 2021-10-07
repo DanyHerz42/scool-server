@@ -40,8 +40,8 @@ exports.registroUsuario = async (req, res) => {
     console.log(password_);
 
     const insertUser = await query(`INSERT INTO users (name_user, lastname, nickname, email, password_, id_role, id_status) VALUES ("${name_user}","${lastname}","${formatNick}","${email}","${hash}","${role}", 1);`)
-    const newUser = await query(`SELECT * FROM users WHERE email = "${email}"`)
-    const token = JWT.sign({ newUser }, config.secret, {
+    const userFound = await query(`SELECT * FROM users WHERE email = "${email}"`)
+    const token = JWT.sign({ userFound }, config.secret, {
       expiresIn: '2hr'
     });
 
@@ -76,7 +76,6 @@ exports.login = async (req, res) => {
 }
 
 exports.revalidarToken = (req,res) => {
-
   const userFound = req.userFound;
   const token = JWT.sign({userFound}, config.secret, {
     expiresIn: '2h'

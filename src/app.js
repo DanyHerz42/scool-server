@@ -12,11 +12,20 @@ app.use(express.json())
 app.use(cors());
 app.options("*", cors());
 
-//importacion de rutas
+//importacion y configuracion de rutas
 const userRoutes = require('./routes/users.routes')
+const classesRoutes = require('./routes/classes.routes')
+const teachersRoutes = require('./routes/teachers.routes');
+const studentsRoutes = require('./routes/students.routes');
+const organizationsRoutes = require('./routes/organizations.routes');
 
 app.use("/users", userRoutes);
+app.use("/classes", classesRoutes);
+app.use("/teachers", teachersRoutes);
+app.use("/students", studentsRoutes);
+app.use("/organizations", organizationsRoutes);
 
+//Ruta inicial
 app.set("pkg", pkg)
 
 app.get('/', (req, res) => {
