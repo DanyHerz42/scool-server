@@ -1,5 +1,4 @@
 const query = require('../db/mysql.conn');
-const { get } = require('../routes/users.routes');
 
 exports.completeInfo = async(req, res) => {
   const {biography, image, name_org} = req.body;
@@ -11,7 +10,7 @@ exports.completeInfo = async(req, res) => {
     }
     let objInsert = {
       biography,
-      image,
+      image, 
       quantity_badges: 0,
       id_org: org[0].id_org,
       id_status: 1,
