@@ -19,7 +19,9 @@ const classesRoutes = require('./routes/classes.routes')
 const teachersRoutes = require('./routes/teachers.routes');
 const studentsRoutes = require('./routes/students.routes');
 const organizationsRoutes = require('./routes/organizations.routes');
-const homeworksRoutes = require('./routes/homeworks.routes')
+const homeworksRoutes = require('./routes/homeworks.routes');
+const annoucementsRoutes = require('./routes/annoucements.routes')
+
 
 app.use("/users", userRoutes);
 app.use("/classes", classesRoutes);
@@ -27,6 +29,7 @@ app.use("/teachers", teachersRoutes);
 app.use("/students", studentsRoutes);
 app.use("/organizations", organizationsRoutes);
 app.use("/homeworks", homeworksRoutes);
+app.use("/annoucements", annoucementsRoutes)
 
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")))
 

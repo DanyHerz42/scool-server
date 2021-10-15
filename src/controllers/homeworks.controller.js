@@ -6,13 +6,12 @@ exports.createHomework = async (req, res) => {
   try {
     const insertHomework = await query(`INSERT INTO homeworks SET ?`, req.body)
     req.files.forEach(async element => {
-      const insertArchivo = await query(`INSERT INTO attachments SET ?`, { filename: element.originalname, url: path.join(`/uploads/${req.nameFolderTarea}/${insertHomework.insertId}/${element.originalname}`), id_homework: insertHomework.insertId })
+      const insertArchivo = await query(`INSERT INTO attachments SET ?`, { filename: element.originalname, url: `/uploads/${req.nameFolderTarea}/HM_${insertHomework.insertId}/${element.originalname}`, id_homework: insertHomework.insertId })
     });
     const returnData = await query(`SELECT * FROM homeworks WHERE id_homework = ${insertHomework.insertId}`);
     const files = await query(`SELECT * FROM attachments WHERE id_homework = ${insertHomework.insertId}`)
-
     returnData.push({ files: files })
-    res.status(200).json({ ok: true, message: "Esta es la info de la clase creada", returnData })
+    res.status(200).json({ ok: true, message: "Esta es la info de la tarea creada", returnData })
   } catch (error) {
     res.status(500).json({ ok: false, message: "Algo a salido mal" })
   }
@@ -52,3 +51,4 @@ exports.getHomeworkByClassId = async (req, res) => {
     console.log(error);
   }
 }
+
