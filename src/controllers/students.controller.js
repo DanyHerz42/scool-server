@@ -53,7 +53,7 @@ exports.registerInClass = async(req, res) => {
 exports.getClasses = async(req, res) => {
   try {
     const getIdStudent = await query(`SELECT id_student FROM students WHERE id_user = ${req.userFound[0].id_user}`)
-    const classes = await query(`SELECT id_class, classes.name, classes.description, classes.color, teachers.id_teacher, users.name_user AS teacher_username FROM students 
+    const classes = await query(`SELECT classes.id_class, classes.name, classes.description, classes.color, teachers.id_teacher, users.name_user AS teacher_username FROM students 
                                 JOIN relation_students_classes ON students.id_student = relation_students_classes.id_student
                                 JOIN classes ON relation_students_classes.id_class = classes.id_class
                                 JOIN teachers ON teachers.id_teacher = classes.id_teacher
