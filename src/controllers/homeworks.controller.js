@@ -37,7 +37,7 @@ exports.getHomeworkByClassId = async (req, res) => {
   try {
     let data = await query(`SELECT * FROM homeworks WHERE id_class = ${id} AND status_homework = "ACTIVE"`);
     if(data.length < 1){
-      return res.status(200).json({ok: false, message: "No hay tareas activas"})
+      return res.status(200).json({ok: false2, message: "No hay tareas activas"})
     }
     let homeworks = await Promise.all(data.map(async (e) => {
       const files = await query(`SELECT * FROM attachments WHERE id_homework = ${e.id_homework}`);
