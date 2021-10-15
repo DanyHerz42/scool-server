@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const { getAnnouncementsFiles } = require('../libs/getAnnouncementsFiles')
 const { getHomeworksFiles } = require('../libs/getHomeworksFiles');
-const { formatDate } = require('../libs/formatDate')
 
 exports.createClass = async (req, res) => {
   try {
