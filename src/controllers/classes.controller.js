@@ -4,18 +4,21 @@ const fs = require('fs');
 const path = require('path');
 const { getAnnouncementsFiles } = require('../libs/getAnnouncementsFiles')
 const { getHomeworksFiles } = require('../libs/getHomeworksFiles');
+const { createNewPeriod } = require('../libs/createNewPeriod');
+const { getHomeworksByPeriod } = require('../libs/getHomeworksByPeriod');
 
 exports.createClass = async (req, res) => {
   try {
     //recibe el body
-    const request = req.body;
-    //genera la clave
+    const {name, quota, description, id_teacher, color, periods} = req.body;
+ 
+    // genera la clave
     const randomKeyGen = await randomKey();
-    request.unique_identifier = randomKeyGen;
-    request.id_status = 1;
-    const newClass = await query(`INSERT INTO classes SET ?`, request)
+    const newClass = await query(`INSERT INTO classes SET ?`, {name, quota, description, id_teacher, color, unique_identifier: randomKeyGen, id_status: 1})
     fs.mkdirSync(path.join(__dirname, `/../uploads/${randomKeyGen}`), {recursive: true});
-    res.status(200).json({ok:true, message: "clase creada", randomKeyGen})
+    const insertarPeriodos = await createNewPeriod(periods, newClass.insertId);
+    console.log(insertarPeriodos);
+    res.status(200).json({ok:true, message: "clase creada", randomKeyGen});
   } catch (error) {
     console.log(error);
     res.status(500).json({ok: false,error})
@@ -34,18 +37,16 @@ exports.getClassesTeacher = async (req, res) => {
 
 exports.getWorkflow = async(req, res) => {
   try {
-    let announcements = await getAnnouncementsFiles(req.params);
-    let homeworks = await getHomeworksFiles(req.params);
-    let workflow = await announcements.concat(homeworks);
-
-    workflow = workflow.sort((a,b) => {
-      return a.creation_date > b.creation_date ? -1 : a.creation_date < b.creation_date ? 1 :0;
-    })
+    const periods = await query(`SELECT * FROM class_periods WHERE ?`, req.params)
+    let arrPeriods = await Promise.all(periods.map(async element => {
+      element.workflow = await getHomeworksByPeriod(element.id_period)
+      return element
+    }));
     
-    
-    res.status(200).json({ok: true, message: `Este es el flujo de trabajo para la clase ${req.params}`, workflow})
+    res.status(200).json({ok: true, message: "Este es el workflow dividido por periodos", arrPeriods});
     
   } catch (error) {
     res.status(500).json({ok: false, error})
+    console.log(error);
   }
 }
