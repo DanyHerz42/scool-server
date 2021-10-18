@@ -12,7 +12,7 @@ exports.createClass = async (req, res) => {
     const id_teacher = await query(`SELECT id_teacher FROM teachers WHERE id_user = ${req.userFound[0].id_user}`)
     // genera la clave
     const randomKeyGen = await randomKey();
-    const newClass = await query(`INSERT INTO classes SET ?`, {name, quota, description, id_teacher, color, unique_identifier: randomKeyGen, id_status: 1})
+    const newClass = await query(`INSERT INTO classes SET ?`, {name, quota, description, id_teacher : id_teacher[0].id_teacher, color, unique_identifier: randomKeyGen, id_status: 1})
     fs.mkdirSync(path.join(__dirname, `/../uploads/${randomKeyGen}`), {recursive: true});
     const insertarPeriodos = await createNewPeriod(periods, newClass.insertId);
     console.log(insertarPeriodos);

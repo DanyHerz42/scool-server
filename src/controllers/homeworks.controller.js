@@ -1,10 +1,12 @@
 const path = require('path');
 const fs = require('fs');
 const query = require('../db/mysql.conn');
+const { addPending } = require('../libs/addPending');
 
 exports.createHomework = async (req, res) => {
   try {
-    const insertHomework = await query(`INSERT INTO homeworks SET ?`, req.body)
+    const insertHomework = await query(`INSERT INTO homeworks SET ?`, req.body);
+    // await addPending();
     req.files.forEach(async element => {
       const insertArchivo = await query(`INSERT INTO attachments SET ?`, { filename: element.originalname, url: `/uploads/${req.nameFolderTarea}/HM_${insertHomework.insertId}/${element.originalname}`, id_homework: insertHomework.insertId })
     });
