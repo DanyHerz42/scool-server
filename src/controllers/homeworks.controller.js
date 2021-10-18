@@ -5,8 +5,10 @@ const { addPending } = require('../libs/addPending');
 
 exports.createHomework = async (req, res) => {
   try {
-    const insertHomework = await query(`INSERT INTO homeworks SET ?`, req.body);
-    // await addPending();
+    const {body} = req;
+    const insertHomework = await query(`INSERT INTO homeworks SET ?`, body);
+    const id_class = await query(`SELECT classes.id_class FROM classes JOIN class_periods ON class_periods.id_class = classes.id_class WHERE id_period = ${body.id_period}`)
+    addPending(id_class[0].id_class, insertHomework.insertId);
     req.files.forEach(async element => {
       const insertArchivo = await query(`INSERT INTO attachments SET ?`, { filename: element.originalname, url: `/uploads/${req.nameFolderTarea}/HM_${insertHomework.insertId}/${element.originalname}`, id_homework: insertHomework.insertId })
     });
@@ -16,6 +18,7 @@ exports.createHomework = async (req, res) => {
     res.status(200).json({ ok: true, message: "Esta es la info de la tarea creada", returnData })
   } catch (error) {
     res.status(500).json({ ok: false, message: "Algo a salido mal" })
+    console.log(error);
   }
 }
 

@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     try {
       //selecciono el unique_identifier para acceder a la carpeta de la clase
-      const selecClass = await query(`SELECT id_class, unique_identifier FROM classes WHERE id_class = ${req.body.id_class}`)
+      const selecClass = await query(`SELECT classes.id_class, classes.unique_identifier FROM classes JOIN class_periods ON class_periods.id_class = classes.id_class WHERE class_periods.id_period = ${req.body.id_period}`)
       //selecciono el siguiente id de homworks a insertar, para sumarle 1 y obtener el id nuevo
       const selectLast = await query(`SELECT id_homework FROM homeworks ORDER BY id_homework DESC LIMIT 1`);
       const nuevoId = parseInt(selectLast[0].id_homework) + 1;
@@ -40,7 +40,7 @@ const upload = multer({
 
 
 const { createHomework, getHomeworkById, getHomeworkByClassId} = require('../controllers/homeworks.controller');
-
+// 
 
 router.post('/create-homework', validarJWT, upload.array('files'), createHomework);
 router.get('/get-homework-by-id/:id', getHomeworkById);

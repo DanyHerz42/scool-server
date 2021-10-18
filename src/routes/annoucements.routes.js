@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     try {
       //selecciono el unique_identifier para acceder a la carpeta de la clase
-      const selecClass = await query(`SELECT id_class, unique_identifier FROM classes WHERE id_class = ${req.body.id_class}`)
+      const selecClass = await query(`SELECT classes.id_class, classes.unique_identifier FROM classes JOIN class_periods ON class_periods.id_class = classes.id_class WHERE class_periods.id_period = ${req.body.id_period}`)
       //selecciono el siguiente id de homworks a insertar, para sumarle 1 y obtener el id nuevo
       let selectLast = await query(`SELECT id_announcement FROM announcements ORDER BY id_announcement DESC LIMIT 1`);
       let nuevoId;
@@ -18,7 +18,6 @@ const storage = multer.diskStorage({
         nuevoId = 1
       }else{
         nuevoId = parseInt(selectLast[0].id_announcement) + 1;
-        console.log(selectLast);
       }
       
       const nameFolderTarea = selecClass[0].unique_identifier; 

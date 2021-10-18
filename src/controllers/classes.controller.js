@@ -10,6 +10,7 @@ exports.createClass = async (req, res) => {
     //recibe el body
     const {name, quota, description, color, periods} = req.body;
     const id_teacher = await query(`SELECT id_teacher FROM teachers WHERE id_user = ${req.userFound[0].id_user}`)
+    console.log(id_teacher)
     // genera la clave
     const randomKeyGen = await randomKey();
     const newClass = await query(`INSERT INTO classes SET ?`, {name, quota, description, id_teacher : id_teacher[0].id_teacher, color, unique_identifier: randomKeyGen, id_status: 1})
